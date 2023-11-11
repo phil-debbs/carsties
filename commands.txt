@@ -1,0 +1,53 @@
+dotnet tool install dotnet-ef -g
+dotnet ef migrations add "InitialCreate" -o Data/Migrations
+docker compose up -d
+dotnet ef database update
+dotnet ef database drop
+dotnet watch  //this runs seeding for the database if included
+dotnet new gitignore
+
+docker pull postgres
+
+docker image ls
+
+docker run \
+  --name pgsql-dev \
+  –rm \
+  -e POSTGRES_PASSWORD=test1234 \
+  -p 5432:5432 postgres
+
+docker run -d -e POSTGRES_PASSWORD=postgrespw -p 5431:5431 -v ${PWD}/postgres-docker:/var/lib/postgresql/data postgres
+
+
+docker run --name postgresTest -d -e POSTGRES_PASSWORD=postgrespw -p 5432:5432  postgres
+
+–name: the name of the PostgreSQL container.
+–rm: this removes the container when it’s stopped.
+-e: the only mandatory environment variable is the database password that needs to be provided before creating the container.
+-p: the port mapping needs to be provided so that the host port on the machine will map to the PostgreSQL container port inside the container.
+
+https://earthly.dev/blog/postgres-docker/#:~:text=5s%20retries%3A%205-,Limitations%20of%20Running%20PostgreSQL%20Database%20with%20Docker,great%20for%20running%20stateless%20applications.
+
+Basically, you need to map the data directory of the PostgreSQL from inside the container to a directory on your local machine. This can be done using the following command:
+$ docker run \
+  --name pgsql-dev \
+  -e POSTGRES_PASSWORD=test1234 \
+  -d \
+  -v ${PWD}/postgres-docker:/var/lib/postgresql/data \
+  -p 5432:5432 postgres 
+
+-Detached mode: denoted by d, the detached mode will allow the container to run in the background.
+-Volume: the local directory on the host is mapped to the data directory for PostgreSQL inside the container.
+
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=citizix_user
+      - POSTGRES_DB=citizix_db
