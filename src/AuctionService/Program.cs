@@ -21,6 +21,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//seeding the database
 try
 {
     DbInitializer.InitDb(app);
@@ -30,4 +31,5 @@ catch (Exception ex)
 
     Console.WriteLine(ex);
 }
+
 app.Run();

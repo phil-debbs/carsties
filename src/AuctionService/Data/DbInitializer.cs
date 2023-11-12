@@ -7,12 +7,11 @@ namespace AuctionService.Data;
 public class DbInitializer
 {
     //create a static method
-    //We will use this db initializer class inside our startup of our application, 
-    //before the app runs. .i.e before app.Run()
-
+    //We will use this db initializer class inside the startup of the application, 
+    //before the app runs. .i.e before app.Run() in Program.cs in this case
     public static void InitDb(WebApplication app)
     {
-        //we need to access to our DbContext in order to add data to it.
+        //we need access to the DbContext in order to add data to it.
         //We do this by defining a scope for the service inside here
         using var scope = app.Services.CreateScope();
         //The "using" would allow the framework to dispose of any of the services used inside the scope.
