@@ -6,6 +6,9 @@ dotnet ef database drop
 dotnet watch  //this runs seeding for the database if included
 dotnet new gitignore
 
+dotnet new webapi -o src/SearchService  //creates a new webapi project
+dotnet sln add  src/SearchService  //adds SearchService project to sln
+
 docker pull postgres
 
 docker image ls
@@ -51,3 +54,7 @@ services:
       - POSTGRES_PASSWORD=S3cret
       - POSTGRES_USER=citizix_user
       - POSTGRES_DB=citizix_db
+
+Elasticsearch
+https://www.knowi.com/blog/what-is-elastic-search/
+docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:tag
