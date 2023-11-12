@@ -8,12 +8,14 @@ namespace AuctionService.RequestHelpers
     {
         public MappingProfiles()
         {
-            //create mapping from Auction to AuctionDto and include Item also
+            //create mapping from Auction to AuctionDto and include mapping for Item also, which is a property of Auctions
             CreateMap<Auction, AuctionDto>().IncludeMembers(x => x.Item);
             CreateMap<Item, AuctionDto>();
 
-            //d = destination, s=source
-            CreateMap<CreateAuctionDto, Auction>().ForMember(d => d.Item, o => o.MapFrom(s => s));
+            //dest = destination, src=source, opt = options
+            //The destination Auction class contains a property Item and we want to populate that with values from the source CreateAuctionDto
+            //So that's what the "ForMember" does.
+            CreateMap<CreateAuctionDto, Auction>().ForMember(dest => dest.Item, opt => opt.MapFrom(src => src));
             CreateMap<CreateAuctionDto, Item>();
         }
     }
