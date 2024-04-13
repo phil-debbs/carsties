@@ -9,6 +9,8 @@ dotnet new gitignore
 dotnet new webapi -o src/SearchService  //creates a new webapi project
 dotnet sln add  src/SearchService  //adds SearchService project to sln
 
+dotnet add reference ../../src/Contracts
+
 docker pull postgres
 
 docker image ls
