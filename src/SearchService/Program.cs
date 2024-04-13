@@ -25,17 +25,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// await DB.InitAsync("SearchDb", MongoClientSettings
-// .FromConnectionString(builder.Configuration.GetConnectionString("MongoDbConnection")));
-
-// await DB.Index<Item>()
-//     .Key(x => x.Make, KeyType.Text)
-//     .Key(x => x.Model, KeyType.Text)
-//     .Key(x => x.Color, KeyType.Text)
-//     .CreateAsync();
 
 try
 {
+    //NOTE: when we hit this line wihtout the Auction service running, the httpclient request keeps firing every 3 seconds 
+    //This means that the execution gets stuck here and the app.Run() that follows never gets called.
+    //In this case, although the search service is running, endpoints have not been instantiated yet.
     await DbInitializer.InitDb(app);
 }
 catch (Exception ex)
