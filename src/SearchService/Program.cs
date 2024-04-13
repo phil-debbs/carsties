@@ -1,7 +1,10 @@
-using MongoDB.Driver;
-using MongoDB.Entities;
+// using MongoDB.Driver;
+// using MongoDB.Entities;
+using System.Net;
+using Polly;
+using Polly.Extensions.Http;
 using SearchService.Data;
-using SearchService.Entities;
+// using SearchService.Entities;
 using SearchService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddHttpClient<AuctionSvcHttpClient>();
+
+//Use Microsoft.Extensions.Http.Polly to enable transient fault tolerance for the http request to keep trying until its successful
+
+builder.Services.AddHttpClient<AuctionSvcHttpClient>().AddPolicyHandler(GetPolicy());
 
 
 var app = builder.Build();
@@ -39,3 +45,10 @@ catch (Exception ex)
 
 
 app.Run();
+
+
+static IAsyncPolicy<HttpResponseMessage> GetPolicy()
+    => HttpPolicyExtensions
+    .HandleTransientHttpError() //handles transient http error. Transient failures are failure which may at some point in the future may no more be failures.
+    .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
+    .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(3));  //keeps trying every 3 seconds until it succeeds

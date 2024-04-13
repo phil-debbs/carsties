@@ -16,7 +16,7 @@ namespace SearchService.Data
             await DB.InitAsync("SearchDb",
             MongoClientSettings.FromConnectionString(app.Configuration.GetConnectionString("MongoDbConnection")));
 
-            //create and index for the Item
+            //create an index for the Item
             await DB.Index<Item>()
                 .Key(x => x.Make, KeyType.Text)
                 .Key(x => x.Model, KeyType.Text)
