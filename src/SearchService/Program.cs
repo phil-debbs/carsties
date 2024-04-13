@@ -26,17 +26,23 @@ app.UseAuthorization();
 app.MapControllers();
 
 
-try
+//This is to allow our search service app to accept request event when the Auction service is not running.
+app.Lifetime.ApplicationStarted.Register(async () =>
 {
-    //NOTE: when we hit this line wihtout the Auction service running, the httpclient request keeps firing every 3 seconds 
-    //This means that the execution gets stuck here and the app.Run() that follows never gets called.
-    //In this case, although the search service is running, endpoints have not been instantiated yet.
-    await DbInitializer.InitDb(app);
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex);
-}
+    try
+    {
+        //NOTE: when we hit this line wihtout the Auction service running, the httpclient request keeps firing every 3 seconds 
+        //This means that the execution gets stuck here and the app.Run() that follows never gets called.
+        //In this case, although the search service is running, endpoints have not been instantiated yet.
+        //This can be fixed with app.Lifetime events
+        await DbInitializer.InitDb(app);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+    }
+});
+
 
 
 app.Run();
