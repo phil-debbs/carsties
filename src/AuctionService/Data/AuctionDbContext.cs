@@ -14,3 +14,14 @@ public class AuctionDbContext : DbContext
 
     public DbSet<Auction> Auctions { get; set; }
 }
+
+/************************************************************** 
+-add migrations
+dotnet ef migrations add "[migration name]" -o folderpath
+
+-update database
+dotnet ef database update
+
+-docker
+docker compose up -d
+**/

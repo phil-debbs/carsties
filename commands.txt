@@ -58,3 +58,25 @@ services:
 Elasticsearch
 https://www.knowi.com/blog/what-is-elastic-search/
 docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:tag
+
+docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:tag
+
+
+Postgres Docker Best Practices
+
+1.Backup your data periodically. You can do this by running the pg_dump command from the database container:
+
+docker exec -it <container_name> \
+  pg_dump -U<user_name> --column-inserts --data-only <db_name> > \
+  backup_data.sql
+
+2.Use alpine images if possible. They’re usually smaller in size. For instance, postgres:14.2 is 131mb in size whereas postgres:14.2-alpine is only 78mb with the same functionality. Additionally, alpine images are secure because all the userspace binaries are compiled to protect against common vulnerabilities.
+
+3.Use a persistent volume to store data. As mentioned above, without a persistent volume, you’ll lose data if the container restarts.
+
+4.If there is no database when PostgreSQL starts in a container, a default database will be created and it will not accept incoming connections during that time. This may cause issues with automation tools which may try to access the database as soon as the container starts. To mitigate this, you need to ensure that the database is accepting connections before trying to connect to it. If you’re using Docker Compose, you can use the healthcheck feature:
+healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres"]
+       interval: 5s
+       timeout: 5s
+       retries: 5
